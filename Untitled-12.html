@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حجز يوسف ستايل</title>
+    <style>
+        /* إعدادات عامة */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .section {
+            padding: 120px 20px 80px;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #4caf50;
+            text-transform: uppercase;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input, button {
+            padding: 15px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        input {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: 2px solid #4caf50;
+            transition: border 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border: 2px solid #2196f3;
+        }
+
+        button {
+            background: linear-gradient(to right, #4caf50, #2196f3);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #2196f3, #4caf50);
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+    <section id="booking" class="section">
+        <h2>احجز موعدك</h2>
+        <div class="form-container">
+            <form id="bookingForm">
+                <input type="text" id="name" name="name" placeholder="الاسم" required>
+                <input type="date" id="date" name="date" required>
+                <input type="time" id="time" name="time" required>
+                <button type="submit">إرسال الحجز</button>
+            </form>
+            <p id="responseMessage" style="margin-top: 15px; font-size: 1.2rem;"></p>
+        </div>
+    </section>
+
+    <script>
+        const form = document.getElementById("bookingForm");
+        const responseMessage = document.getElementById("responseMessage");
+
+        // استبدل بـ URL الخاص بتطبيق Google Apps Script الذي قمت بنشره
+        const scriptURL = "https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID/exec";
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            // جمع البيانات من الحقول
+            const formData = {
+                name: document.getElementById("name").value,
+                date: document.getElementById("date").value,
+                time: document.getElementById("time").value
+            };
+
+            try {
+                // إرسال البيانات إلى Google Apps Script عبر POST
+                const response = await fetch(scriptURL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                // عرض رسالة نجاح أو خطأ بناءً على الاستجابة
+                if (result.success) {
+                    responseMessage.textContent = "تم إرسال الحجز بنجاح!";
+                    responseMessage.style.color = "#4caf50";
+                    form.reset();
+                } else {
+                    responseMessage.textContent = "حدث خطأ أثناء الإرسال. حاول مرة أخرى.";
+                    responseMessage.style.color = "red";
+                }
+            } catch (error) {
+                responseMessage.textContent = "تعذر الإرسال. تحقق من الاتصال.";
+                responseMessage.style.color = "red";
+            }
+        });
+    </script>
+</body>
+</html>
